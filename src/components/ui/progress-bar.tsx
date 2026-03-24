@@ -10,7 +10,7 @@ interface ProgressBarProps {
 
 export function ProgressBar({ progress, className }: ProgressBarProps) {
   return (
-    <div className={cn('w-full bg-gray-100 rounded-full h-2', className)}>
+    <div className={cn('w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2', className)}>
       <motion.div
         initial={{ width: 0 }}
         animate={{ width: `${progress}%` }}

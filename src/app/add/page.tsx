@@ -44,17 +44,17 @@ export default function AddPackagePage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-surface flex items-center justify-center">
+      <div className="min-h-screen bg-surface dark:bg-[#1a1a2e] flex items-center justify-center">
         <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-center">
           <div className="text-7xl mb-4">🎉</div>
-          <h2 className="text-xl font-bold text-gray-800">החבילה נוספה!</h2>
+          <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">החבילה נוספה!</h2>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-surface safe-bottom">
+    <div className="min-h-screen bg-surface dark:bg-[#1a1a2e] safe-bottom">
       <div className="gradient-primary px-6 pt-14 pb-8 rounded-b-3xl">
         <button onClick={() => router.back()} className="flex items-center gap-2 text-white/80 mb-4">
           <ArrowRight className="w-5 h-5" />
@@ -65,10 +65,10 @@ export default function AddPackagePage() {
       </div>
 
       <div className="px-4 -mt-4 space-y-4 pb-4">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-2xl p-5 shadow-sm space-y-5">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm space-y-5">
           {/* Store */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">חנות / שולח</label>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">חנות / שולח</label>
             <div className="flex flex-wrap gap-2">
               {STORES.map((s) => (
                 <button
@@ -88,26 +88,26 @@ export default function AddPackagePage() {
                 value={customStore}
                 onChange={(e) => setCustomStore(e.target.value)}
                 placeholder="שם החנות"
-                className="mt-3 w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+                className="mt-3 w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
               />
             )}
           </div>
 
           {/* Tracking */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">מספר מעקב (אופציונלי)</label>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">מספר מעקב (אופציונלי)</label>
             <input
               value={trackingNumber}
               onChange={(e) => setTrackingNumber(e.target.value)}
               placeholder="הזינו מספר מעקב"
               dir="ltr"
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm font-mono focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+              className="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl px-4 py-3 text-sm font-mono focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
             />
           </div>
 
           {/* Status */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">סטטוס</label>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">סטטוס</label>
             <div className="flex gap-2">
               {STATUSES.map((s) => (
                 <button
@@ -126,12 +126,12 @@ export default function AddPackagePage() {
 
           {/* Location */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">מיקום איסוף (אופציונלי)</label>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">מיקום איסוף (אופציונלי)</label>
             <input
               value={pickupLocation}
               onChange={(e) => setPickupLocation(e.target.value)}
               placeholder="לדוגמה: סניף דואר 61"
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+              className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
             />
           </div>
 

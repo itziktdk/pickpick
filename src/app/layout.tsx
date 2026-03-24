@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Heebo } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/lib/auth-context';
+import { ThemeProvider } from '@/components/theme-provider';
 
 const heebo = Heebo({
   subsets: ['hebrew', 'latin'],
@@ -27,11 +28,26 @@ export const viewport: Viewport = {
   themeColor: '#FF6B6B',
 };
 
+const themeScript = `
+(function(){
+  try {
+    var t = localStorage.getItem('pickpick-theme') || 'system';
+    var dark = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (dark) document.documentElement.classList.add('dark');
+  } catch(e){}
+})();
+`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="he" dir="rtl" className={heebo.variable}>
+    <html lang="he" dir="rtl" className={heebo.variable} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className="font-sans min-h-screen">
-        <AuthProvider>{children}</AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

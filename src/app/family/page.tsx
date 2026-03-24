@@ -167,7 +167,7 @@ export default function FamilyPage() {
   const activePackages = displayedPackages.filter((p) => p.status !== 'picked_up');
 
   return (
-    <div className="min-h-screen bg-surface safe-bottom">
+    <div className="min-h-screen bg-surface dark:bg-[#1a1a2e] safe-bottom">
       <div className="gradient-primary px-6 pt-14 pb-8 rounded-b-3xl">
         <div className="flex items-center justify-between">
           <div>
@@ -200,7 +200,7 @@ export default function FamilyPage() {
               whileTap={{ scale: 0.95 }}
               onClick={() => setSelectedMember(selectedMember === member.id ? 'all' : member.id)}
               className={cn(
-                'flex-shrink-0 bg-white rounded-2xl p-3 card-shadow flex flex-col items-center gap-1.5 min-w-[80px] transition-all',
+                'flex-shrink-0 bg-white dark:bg-gray-800 rounded-2xl p-3 card-shadow flex flex-col items-center gap-1.5 min-w-[80px] transition-all',
                 selectedMember === member.id && 'ring-2 ring-primary-400'
               )}
             >
@@ -210,7 +210,7 @@ export default function FamilyPage() {
               >
                 {member.initial}
               </div>
-              <span className="text-xs font-bold text-secondary-700">{member.name}</span>
+              <span className="text-xs font-bold text-secondary-700 dark:text-gray-100">{member.name}</span>
               <span className="text-[10px] text-gray-400">
                 {member.packages.filter((p) => p.status !== 'picked_up').length} חבילות
               </span>
@@ -229,7 +229,7 @@ export default function FamilyPage() {
                 'px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors',
                 selectedMember === tab.id
                   ? 'gradient-primary text-white'
-                  : 'bg-white text-gray-500 card-shadow'
+                  : 'bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 card-shadow'
               )}
             >
               {tab.name}
@@ -248,7 +248,7 @@ export default function FamilyPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, x: -100 }}
                 transition={{ delay: i * 0.05 }}
-                className="bg-white rounded-2xl p-4 card-shadow"
+                className="bg-white dark:bg-gray-800 rounded-2xl p-4 card-shadow"
               >
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-3">
@@ -259,7 +259,7 @@ export default function FamilyPage() {
                       {pkg.storeName.charAt(0)}
                     </div>
                     <div>
-                      <h3 className="font-bold text-secondary-700 text-sm">{pkg.storeName}</h3>
+                      <h3 className="font-bold text-secondary-700 dark:text-gray-100 text-sm">{pkg.storeName}</h3>
                       <p className="text-[10px] text-gray-400 mt-0.5">
                         <span
                           className="inline-block w-2 h-2 rounded-full mr-1"
@@ -291,7 +291,7 @@ export default function FamilyPage() {
               className="text-center py-12"
             >
               <div className="text-5xl mb-3">📭</div>
-              <h3 className="text-base font-bold text-secondary-700">אין חבילות פעילות</h3>
+              <h3 className="text-base font-bold text-secondary-700 dark:text-gray-100">אין חבילות פעילות</h3>
               <p className="text-sm text-gray-400 mt-1">הכל נאסף! 🎉</p>
             </motion.div>
           )}

@@ -1,11 +1,57 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowRight, Mail, MessageSquare, Bell, Smartphone, Shield, RefreshCw, CheckCircle2, Wifi, WifiOff } from 'lucide-react';
+import { ArrowRight, Mail, MessageSquare, Bell, Smartphone, Shield, RefreshCw, CheckCircle2, Wifi, WifiOff, Sun, Moon, Monitor } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect, Suspense } from 'react';
 import { BottomNav } from '@/components/bottom-nav';
+import { useThemeStore, Theme } from '@/lib/theme-store';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
+
+function ThemeSelector() {
+  const { theme, setTheme } = useThemeStore();
+  const options: { value: Theme; label: string; icon: string }[] = [
+    { value: 'light', label: 'בהיר', icon: '☀️' },
+    { value: 'dark', label: 'כהה', icon: '🌙' },
+    { value: 'system', label: 'מערכת', icon: '💻' },
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm space-y-3"
+    >
+      <div className="flex items-center gap-4">
+        <div className="w-11 h-11 rounded-xl bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-400">
+          <Moon className="w-5 h-5" />
+        </div>
+        <div className="flex-1">
+          <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm">מצב תצוגה</h3>
+          <p className="text-xs text-gray-400 mt-0.5">בהיר, כהה או אוטומטי</p>
+        </div>
+      </div>
+      <div className="flex gap-2">
+        {options.map((opt) => (
+          <button
+            key={opt.value}
+            onClick={() => setTheme(opt.value)}
+            className={cn(
+              'flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-semibold border transition-all',
+              theme === opt.value
+                ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300'
+                : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400'
+            )}
+          >
+            <span>{opt.icon}</span>
+            {opt.label}
+          </button>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
 
 function GmailSection() {
   const searchParams = useSearchParams();
@@ -80,20 +126,20 @@ function GmailSection() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.05 }}
-      className="bg-white rounded-2xl p-4 shadow-sm space-y-4"
+      className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm space-y-4"
     >
       <div className="flex items-center gap-4">
-        <div className="w-11 h-11 rounded-xl bg-primary-50 flex items-center justify-center text-primary-600">
+        <div className="w-11 h-11 rounded-xl bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-400">
           <Mail className="w-5 h-5" />
         </div>
         <div className="flex-1">
-          <h3 className="font-bold text-gray-900 text-sm">חיבור Gmail</h3>
+          <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm">חיבור Gmail</h3>
           <p className="text-xs text-gray-400 mt-0.5">
             {gmailConnected ? `מחובר כ-${gmailEmail}` : 'סריקת אימיילים לזיהוי חבילות'}
           </p>
         </div>
         {gmailConnected ? (
-          <span className="flex items-center gap-1 text-xs text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full font-semibold">
+          <span className="flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-1 rounded-full font-semibold">
             <CheckCircle2 className="w-3.5 h-3.5" />
             מחובר
           </span>
@@ -112,7 +158,7 @@ function GmailSection() {
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
-          className="space-y-3 border-t border-gray-100 pt-3"
+          className="space-y-3 border-t border-gray-100 dark:border-gray-700 pt-3"
         >
           {lastScan && (
             <p className="text-xs text-gray-400">
@@ -125,7 +171,7 @@ function GmailSection() {
               whileTap={{ scale: 0.95 }}
               onClick={handleScan}
               disabled={scanning}
-              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold border border-primary-200 text-primary-600 bg-primary-50"
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold border border-primary-200 dark:border-primary-800 text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/30"
             >
               <RefreshCw className={`w-4 h-4 ${scanning ? 'animate-spin' : ''}`} />
               {scanning ? 'סורק...' : 'סרוק עכשיו'}
@@ -133,17 +179,17 @@ function GmailSection() {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={handleDisconnect}
-              className="py-2.5 px-4 rounded-xl text-sm font-semibold border border-red-200 text-red-500 bg-red-50"
+              className="py-2.5 px-4 rounded-xl text-sm font-semibold border border-red-200 dark:border-red-800 text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-900/30"
             >
               ניתוק
             </motion.button>
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">סריקה אוטומטית</span>
+            <span className="text-sm text-gray-600 dark:text-gray-300">סריקה אוטומטית</span>
             <button
               onClick={() => setAutoScan(!autoScan)}
-              className={`relative w-11 h-6 rounded-full transition-colors ${autoScan ? 'bg-primary-500' : 'bg-gray-300'}`}
+              className={`relative w-11 h-6 rounded-full transition-colors ${autoScan ? 'bg-primary-500' : 'bg-gray-300 dark:bg-gray-600'}`}
             >
               <motion.div
                 animate={{ x: autoScan ? -20 : 0 }}
@@ -167,14 +213,16 @@ export default function SettingsPage() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-surface safe-bottom">
+    <div className="min-h-screen bg-surface dark:bg-[#1a1a2e] safe-bottom">
       <div className="gradient-primary px-6 pt-14 pb-8 rounded-b-3xl">
         <h1 className="text-2xl font-black text-white">הגדרות ⚙️</h1>
         <p className="text-white/70 text-sm mt-1">ניהול חיבורים ואינטגרציות</p>
       </div>
 
       <div className="px-4 -mt-4 space-y-3 pb-4">
-        <Suspense fallback={<div className="bg-white rounded-2xl p-4 shadow-sm animate-pulse h-20" />}>
+        <ThemeSelector />
+
+        <Suspense fallback={<div className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm animate-pulse h-20" />}>
           <GmailSection />
         </Suspense>
 
@@ -184,16 +232,16 @@ export default function SettingsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: (i + 1) * 0.05 }}
-            className="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-4"
+            className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm flex items-center gap-4"
           >
-            <div className="w-11 h-11 rounded-xl bg-primary-50 flex items-center justify-center text-primary-600">
+            <div className="w-11 h-11 rounded-xl bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-400">
               <item.icon className="w-5 h-5" />
             </div>
             <div className="flex-1">
-              <h3 className="font-bold text-gray-900 text-sm">{item.title}</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm">{item.title}</h3>
               <p className="text-xs text-gray-400 mt-0.5">{item.desc}</p>
             </div>
-            <span className="text-xs bg-accent-50 text-accent-600 px-2.5 py-1 rounded-full font-semibold">בקרוב</span>
+            <span className="text-xs bg-accent-50 dark:bg-accent-900/30 text-accent-600 dark:text-accent-400 px-2.5 py-1 rounded-full font-semibold">בקרוב</span>
           </motion.div>
         ))}
 

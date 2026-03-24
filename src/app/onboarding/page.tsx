@@ -41,7 +41,7 @@ export default function OnboardingPage() {
   const screen = screens[current];
 
   return (
-    <div className="min-h-screen bg-surface flex flex-col">
+    <div className="min-h-screen bg-surface dark:bg-[#1a1a2e] flex flex-col">
       <div className="flex-1 flex flex-col items-center justify-center px-8 relative overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
@@ -83,8 +83,8 @@ export default function OnboardingPage() {
               ))}
             </div>
 
-            <h2 className="text-2xl font-black text-secondary-700 mb-3">{screen.title}</h2>
-            <p className="text-gray-500 text-base leading-relaxed max-w-sm mx-auto">{screen.desc}</p>
+            <h2 className="text-2xl font-black text-secondary-700 dark:text-gray-100 mb-3">{screen.title}</h2>
+            <p className="text-gray-500 dark:text-gray-400 text-base leading-relaxed max-w-sm mx-auto">{screen.desc}</p>
           </motion.div>
         </AnimatePresence>
       </div>

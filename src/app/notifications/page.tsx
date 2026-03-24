@@ -24,7 +24,7 @@ export default function NotificationsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-surface safe-bottom">
+    <div className="min-h-screen bg-surface dark:bg-[#1a1a2e] safe-bottom">
       <div className="gradient-primary px-6 pt-14 pb-8 rounded-b-3xl">
         <div className="flex items-center justify-between">
           <div>
@@ -66,8 +66,8 @@ export default function NotificationsPage() {
               transition={{ delay: i * 0.06 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => router.push(`/package/${notif.packageId}`)}
-              className={`bg-white rounded-2xl p-4 card-shadow cursor-pointer flex items-start gap-3 relative ${
-                !notif.read ? 'ring-2 ring-primary-200/50' : ''
+              className={`bg-white dark:bg-gray-800 rounded-2xl p-4 card-shadow cursor-pointer flex items-start gap-3 relative ${
+                !notif.read ? 'ring-2 ring-primary-200/50 dark:ring-primary-700/50' : ''
               }`}
             >
               {!notif.read && (
@@ -75,8 +75,8 @@ export default function NotificationsPage() {
               )}
               <span className="text-2xl mt-0.5">{TYPE_ICONS[notif.type] || '📦'}</span>
               <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-secondary-700 text-sm">{notif.title}</h3>
-                <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{notif.body}</p>
+                <h3 className="font-bold text-secondary-700 dark:text-gray-100 text-sm">{notif.title}</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">{notif.body}</p>
                 <p className="text-[10px] text-gray-300 mt-1.5 font-semibold">{timeAgo(notif.date)}</p>
               </div>
             </motion.div>

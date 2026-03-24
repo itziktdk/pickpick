@@ -4,13 +4,13 @@ import { cn } from '@/lib/utils';
 
 export function Skeleton({ className }: { className?: string }) {
   return (
-    <div className={cn('animate-pulse rounded-2xl bg-gray-200/60', className)} />
+    <div className={cn('animate-pulse rounded-2xl bg-gray-200/60 dark:bg-gray-700/60', className)} />
   );
 }
 
 export function PackageCardSkeleton() {
   return (
-    <div className="bg-white rounded-2xl p-4 card-shadow space-y-3">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 card-shadow space-y-3">
       <div className="flex items-center gap-3">
         <Skeleton className="w-10 h-10 rounded-xl" />
         <div className="flex-1 space-y-2">

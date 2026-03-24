@@ -26,7 +26,7 @@ export default function StatsPage() {
   const maxStore = Math.max(...stats.favoriteStores.map((s) => s.count));
 
   return (
-    <div className="min-h-screen bg-surface safe-bottom">
+    <div className="min-h-screen bg-surface dark:bg-[#1a1a2e] safe-bottom">
       <div className="gradient-primary px-6 pt-14 pb-8 rounded-b-3xl">
         <h1 className="text-2xl font-black text-white">הסטטיסטיקות שלי 📊</h1>
         <p className="text-white/70 text-sm mt-1">כל המספרים במקום אחד</p>
@@ -45,22 +45,22 @@ export default function StatsPage() {
             { label: 'השנה', value: stats.totalThisYear, emoji: '📅' },
             { label: 'ממוצע ימים', value: stats.averageDeliveryDays, emoji: '⏱️' },
           ].map((s) => (
-            <div key={s.label} className="bg-white rounded-2xl p-4 card-shadow text-center">
+            <div key={s.label} className="bg-white dark:bg-gray-800 rounded-2xl p-4 card-shadow text-center">
               <span className="text-2xl">{s.emoji}</span>
-              <p className="text-2xl font-black text-secondary-700 mt-1">{s.value}</p>
+              <p className="text-2xl font-black text-secondary-700 dark:text-gray-200 mt-1">{s.value}</p>
               <p className="text-xs text-gray-400 mt-0.5">{s.label}</p>
             </div>
           ))}
         </motion.div>
 
         {/* Fun stats */}
-        <motion.div variants={item} className="bg-white rounded-2xl p-4 card-shadow space-y-3">
+        <motion.div variants={item} className="bg-white dark:bg-gray-800 rounded-2xl p-4 card-shadow space-y-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-accent-50 flex items-center justify-center">
               <Store className="w-5 h-5 text-accent-500" />
             </div>
             <div>
-              <p className="text-sm font-bold text-secondary-700">הזמנת מ-{stats.uniqueStoresThisYear} חנויות שונות!</p>
+              <p className="text-sm font-bold text-secondary-700 dark:text-gray-100">הזמנת מ-{stats.uniqueStoresThisYear} חנויות שונות!</p>
               <p className="text-xs text-gray-400">מגוון רציני 🛍️</p>
             </div>
           </div>
@@ -69,15 +69,15 @@ export default function StatsPage() {
               <Trophy className="w-5 h-5 text-primary-500" />
             </div>
             <div>
-              <p className="text-sm font-bold text-secondary-700">שיא: {stats.bestMonth.count} חבילות בחודש אחד</p>
+              <p className="text-sm font-bold text-secondary-700 dark:text-gray-100">שיא: {stats.bestMonth.count} חבילות בחודש אחד</p>
               <p className="text-xs text-gray-400">{stats.bestMonth.month} 🏆</p>
             </div>
           </div>
         </motion.div>
 
         {/* Favorite stores */}
-        <motion.div variants={item} className="bg-white rounded-2xl p-4 card-shadow">
-          <h3 className="font-bold text-secondary-700 mb-3 flex items-center gap-2">
+        <motion.div variants={item} className="bg-white dark:bg-gray-800 rounded-2xl p-4 card-shadow">
+          <h3 className="font-bold text-secondary-700 dark:text-gray-100 mb-3 flex items-center gap-2">
             <ShoppingBag className="w-4 h-4 text-primary-400" />
             חנויות מועדפות
           </h3>
@@ -90,7 +90,7 @@ export default function StatsPage() {
                 transition={{ delay: 0.3 + i * 0.08 }}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm font-semibold text-gray-700">{store.name}</span>
+                  <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">{store.name}</span>
                   <span className="text-xs text-gray-400">{store.count} חבילות</span>
                 </div>
                 <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
@@ -108,15 +108,15 @@ export default function StatsPage() {
         </motion.div>
 
         {/* Monthly breakdown */}
-        <motion.div variants={item} className="bg-white rounded-2xl p-4 card-shadow">
-          <h3 className="font-bold text-secondary-700 mb-4 flex items-center gap-2">
+        <motion.div variants={item} className="bg-white dark:bg-gray-800 rounded-2xl p-4 card-shadow">
+          <h3 className="font-bold text-secondary-700 dark:text-gray-100 mb-4 flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-primary-400" />
             פירוט חודשי
           </h3>
           <div className="flex items-end justify-between gap-2 h-32">
             {MONTHLY_DATA.map((m, i) => (
               <div key={m.month} className="flex-1 flex flex-col items-center gap-1">
-                <span className="text-xs font-bold text-secondary-700">{m.count}</span>
+                <span className="text-xs font-bold text-secondary-700 dark:text-gray-100">{m.count}</span>
                 <motion.div
                   initial={{ height: 0 }}
                   animate={{ height: `${(m.count / MAX_MONTH) * 100}%` }}

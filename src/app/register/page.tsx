@@ -61,38 +61,38 @@ export default function RegisterPage() {
         onSubmit={handleSubmit}
         className="px-6 -mt-6 space-y-4"
       >
-        <div className="bg-white rounded-2xl p-6 shadow-lg space-y-4">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg space-y-4">
           {error && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="bg-red-50 border border-red-200 rounded-xl p-3 text-sm text-red-600 text-center">
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl p-3 text-sm text-red-600 dark:text-red-400 text-center">
               {error}
             </motion.div>
           )}
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1.5">שם מלא</label>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">שם מלא</label>
             <input
               type="text" value={name} onChange={e => setName(e.target.value)}
               placeholder="הכנס את שמך"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-400 focus:ring-2 focus:ring-primary-100 outline-none transition-all text-sm"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-white focus:bg-white dark:focus:bg-gray-600 focus:border-primary-400 focus:ring-2 focus:ring-primary-100 outline-none transition-all text-sm"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1.5">אימייל</label>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">אימייל</label>
             <input
               type="email" value={email} onChange={e => setEmail(e.target.value)}
               placeholder="example@email.com" dir="ltr"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-400 focus:ring-2 focus:ring-primary-100 outline-none transition-all text-sm text-left"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-white focus:bg-white dark:focus:bg-gray-600 focus:border-primary-400 focus:ring-2 focus:ring-primary-100 outline-none transition-all text-sm text-left"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1.5">סיסמה</label>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">סיסמה</label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)}
                 placeholder="לפחות 6 תווים" dir="ltr"
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-400 focus:ring-2 focus:ring-primary-100 outline-none transition-all text-sm text-left pl-12"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-white focus:bg-white dark:focus:bg-gray-600 focus:border-primary-400 focus:ring-2 focus:ring-primary-100 outline-none transition-all text-sm text-left pl-12"
               />
               <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -101,11 +101,11 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1.5">אימות סיסמה</label>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">אימות סיסמה</label>
             <input
               type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
               placeholder="הקלד שוב את הסיסמה" dir="ltr"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-400 focus:ring-2 focus:ring-primary-100 outline-none transition-all text-sm text-left"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-white focus:bg-white dark:focus:bg-gray-600 focus:border-primary-400 focus:ring-2 focus:ring-primary-100 outline-none transition-all text-sm text-left"
             />
           </div>
         </div>
@@ -120,7 +120,7 @@ export default function RegisterPage() {
           {loading ? 'נרשם...' : 'הרשמה'}
         </motion.button>
 
-        <p className="text-center text-sm text-gray-500 pb-8">
+        <p className="text-center text-sm text-gray-500 dark:text-gray-400 pb-8">
           כבר יש לך חשבון?{' '}
           <Link href="/login" className="text-primary-500 font-semibold">התחבר</Link>
         </p>

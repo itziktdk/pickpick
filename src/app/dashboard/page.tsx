@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Calendar, ChevronLeft, Truck, PackageCheck, PackageOpen, Clock, Package, Navigation, ChevronDown, Bell, Scan, PlusCircle } from 'lucide-react';
+import { MapPin, Calendar, ChevronLeft, Truck, PackageCheck, PackageOpen, Clock, Package, Navigation, ChevronDown, Bell, Scan, PlusCircle, ExternalLink } from 'lucide-react';
 import { cn, formatDate, timeAgo, getDeliveryProgress, getStoreColor, daysBetween } from '@/lib/utils';
 import { Package as PkgType, STATUS_LABELS, STATUS_COLORS, PackageStatus } from '@/types/package';
 import { usePackageStore } from '@/lib/store';
@@ -18,6 +18,18 @@ const STATUS_ICONS: Record<PackageStatus, React.ReactNode> = {
   ready_for_pickup: <PackageCheck className="w-4 h-4" />,
   picked_up: <Package className="w-4 h-4" />,
 };
+
+function getGreeting(): string {
+  const now = new Date();
+  // Israel timezone approximation: UTC+3
+  const israelHour = (now.getUTCHours() + 3) % 24;
+  const name = 'חבר'; // default, could come from auth context
+
+  if (israelHour >= 5 && israelHour < 12) return `בוקר טוב, ${name}! ☀️`;
+  if (israelHour >= 12 && israelHour < 17) return `צהריים טובים, ${name}! 🌤️`;
+  if (israelHour >= 17 && israelHour < 21) return `ערב טוב, ${name}! 🌅`;
+  return `לילה טוב, ${name}! 🌙`;
+}
 
 function UrgentBanner({ packages }: { packages: PkgType[] }) {
   const expiring = packages.filter((p) => {
@@ -36,11 +48,11 @@ function UrgentBanner({ packages }: { packages: PkgType[] }) {
       className="mx-4 -mt-3 mb-3"
     >
       {expiring.map((pkg) => (
-        <div key={pkg.id} className="bg-red-50 border border-red-200 rounded-2xl p-3 flex items-center gap-3">
+        <div key={pkg.id} className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-2xl p-3 flex items-center gap-3">
           <span className="text-2xl">⚠️</span>
           <div className="flex-1">
-            <p className="text-sm font-bold text-red-700">חבילה עומדת לפוג!</p>
-            <p className="text-xs text-red-500">{pkg.storeName} — {pkg.pickupLocation}</p>
+            <p className="text-sm font-bold text-red-700 dark:text-red-300">חבילה עומדת לפוג!</p>
+            <p className="text-xs text-red-500 dark:text-red-400">{pkg.storeName} — {pkg.pickupLocation}</p>
           </div>
           <Bell className="w-4 h-4 text-red-400" />
         </div>
@@ -54,6 +66,7 @@ function PackageCard({ pkg }: { pkg: PkgType }) {
   const storeColor = getStoreColor(pkg.storeName);
   const progress = getDeliveryProgress(pkg.status);
   const isReady = pkg.status === 'ready_for_pickup';
+  const hasConfirmation = pkg.confirmationUrl && isReady;
 
   return (
     <motion.div
@@ -64,7 +77,7 @@ function PackageCard({ pkg }: { pkg: PkgType }) {
       whileTap={{ scale: 0.98 }}
       onClick={() => router.push(`/package/${pkg.id}`)}
       className={cn(
-        'bg-white rounded-2xl p-4 card-shadow cursor-pointer active:card-shadow-hover transition-shadow',
+        'bg-white dark:bg-gray-800 rounded-2xl p-4 card-shadow cursor-pointer active:card-shadow-hover transition-shadow',
         isReady && 'ring-2 ring-accent-400/30'
       )}
     >
@@ -77,7 +90,7 @@ function PackageCard({ pkg }: { pkg: PkgType }) {
             {pkg.storeName.charAt(0)}
           </div>
           <div>
-            <h3 className="font-bold text-secondary-700">{pkg.storeName}</h3>
+            <h3 className="font-bold text-secondary-700 dark:text-gray-100">{pkg.storeName}</h3>
             <p className="text-xs text-gray-400 mt-0.5">{timeAgo(pkg.receivedDate)}</p>
           </div>
         </div>
@@ -92,7 +105,7 @@ function PackageCard({ pkg }: { pkg: PkgType }) {
 
       <ProgressBar progress={progress} className="mb-3" />
 
-      <div className="flex items-center justify-between text-xs text-gray-500">
+      <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
         <div className="flex items-center gap-3">
           {pkg.pickupLocation && (
             <span className="flex items-center gap-1 truncate max-w-[180px]">
@@ -101,7 +114,20 @@ function PackageCard({ pkg }: { pkg: PkgType }) {
             </span>
           )}
         </div>
-        {isReady && (
+        {hasConfirmation ? (
+          <motion.a
+            href={pkg.confirmationUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+            className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold text-xs bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-lg"
+          >
+            <ExternalLink className="w-3 h-3" />
+            אשר מסירה
+          </motion.a>
+        ) : isReady ? (
           <motion.span
             animate={{ scale: [1, 1.05, 1] }}
             transition={{ repeat: Infinity, duration: 2 }}
@@ -110,7 +136,7 @@ function PackageCard({ pkg }: { pkg: PkgType }) {
             <Navigation className="w-3.5 h-3.5" />
             אסוף עכשיו!
           </motion.span>
-        )}
+        ) : null}
       </div>
     </motion.div>
   );
@@ -122,6 +148,11 @@ export default function DashboardPage() {
   const packages = filteredPackages();
   const router = useRouter();
   const [showCompleted, setShowCompleted] = useState(false);
+  const [greeting, setGreeting] = useState('שלום! 👋');
+
+  useEffect(() => {
+    setGreeting(getGreeting());
+  }, []);
 
   const activePackages = packages.filter((p) => p.status !== 'picked_up');
   const completedPackages = packages.filter((p) => p.status === 'picked_up');
@@ -129,12 +160,12 @@ export default function DashboardPage() {
   const readyCount = allPackages.filter((p) => p.status === 'ready_for_pickup').length;
 
   return (
-    <div className="min-h-screen bg-surface safe-bottom">
+    <div className="min-h-screen bg-surface dark:bg-[#1a1a2e] safe-bottom">
       {/* Header */}
       <div className="gradient-primary px-6 pt-14 pb-8 rounded-b-3xl shadow-lg">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-2xl font-black text-white">שלום! 👋</h1>
+            <h1 className="text-2xl font-black text-white">{greeting}</h1>
             <p className="text-white/80 text-sm mt-1">
               {activeCount > 0
                 ? `יש לך ${activeCount} חבילות ממתינות`
@@ -187,7 +218,7 @@ export default function DashboardPage() {
               className="text-center py-16"
             >
               <div className="text-6xl mb-4">🛒</div>
-              <h3 className="text-lg font-bold text-secondary-700 mb-1">אין חבילות בדרך...</h3>
+              <h3 className="text-lg font-bold text-secondary-700 dark:text-gray-200 mb-1">אין חבילות בדרך...</h3>
               <p className="text-sm text-gray-400">זה הזמן להזמין משהו! 😄</p>
             </motion.div>
           )}
