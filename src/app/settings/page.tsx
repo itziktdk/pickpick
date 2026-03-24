@@ -1,13 +1,164 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowRight, Mail, MessageSquare, Bell, ChevronLeft, Smartphone } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { ArrowRight, Mail, MessageSquare, Bell, Smartphone, Shield, RefreshCw, CheckCircle2, Wifi, WifiOff } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
 import { BottomNav } from '@/components/bottom-nav';
+import Link from 'next/link';
 
-const SETTINGS = [
+function GmailSection() {
+  const searchParams = useSearchParams();
+  const [gmailConnected, setGmailConnected] = useState(false);
+  const [gmailEmail, setGmailEmail] = useState('');
+  const [lastScan, setLastScan] = useState<string | null>(null);
+  const [scanning, setScanning] = useState(false);
+  const [autoScan, setAutoScan] = useState(false);
+
+  useEffect(() => {
+    const token = searchParams.get('token');
+    const email = searchParams.get('email');
+    if (token && email) {
+      localStorage.setItem('gmail_token', token);
+      localStorage.setItem('gmail_email', email);
+      setGmailConnected(true);
+      setGmailEmail(email);
+      window.history.replaceState({}, '', window.location.pathname);
+    } else {
+      const savedEmail = localStorage.getItem('gmail_email');
+      const savedToken = localStorage.getItem('gmail_token');
+      if (savedEmail && savedToken) {
+        setGmailConnected(true);
+        setGmailEmail(savedEmail);
+      }
+    }
+    const savedScan = localStorage.getItem('gmail_last_scan');
+    if (savedScan) setLastScan(savedScan);
+  }, [searchParams]);
+
+  const handleConnectGmail = async () => {
+    try {
+      const res = await fetch('http://localhost:3001/auth/google', { method: 'POST' });
+      const data = await res.json();
+      window.location.href = data.url;
+    } catch {
+      alert('שגיאה בהתחברות. וודאו שהשרת פועל.');
+    }
+  };
+
+  const handleScan = async () => {
+    setScanning(true);
+    try {
+      const token = localStorage.getItem('gmail_token');
+      const res = await fetch('http://localhost:3001/api/packages/scan', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      const now = new Date().toISOString();
+      setLastScan(now);
+      localStorage.setItem('gmail_last_scan', now);
+      alert(`נסרקו ${data.totalScanned} אימיילים, נמצאו ${data.newPackages.length} חבילות`);
+    } catch {
+      alert('שגיאה בסריקה');
+    } finally {
+      setScanning(false);
+    }
+  };
+
+  const handleDisconnect = () => {
+    localStorage.removeItem('gmail_token');
+    localStorage.removeItem('gmail_email');
+    localStorage.removeItem('gmail_last_scan');
+    setGmailConnected(false);
+    setGmailEmail('');
+    setLastScan(null);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.05 }}
+      className="bg-white rounded-2xl p-4 shadow-sm space-y-4"
+    >
+      <div className="flex items-center gap-4">
+        <div className="w-11 h-11 rounded-xl bg-primary-50 flex items-center justify-center text-primary-600">
+          <Mail className="w-5 h-5" />
+        </div>
+        <div className="flex-1">
+          <h3 className="font-bold text-gray-900 text-sm">חיבור Gmail</h3>
+          <p className="text-xs text-gray-400 mt-0.5">
+            {gmailConnected ? `מחובר כ-${gmailEmail}` : 'סריקת אימיילים לזיהוי חבילות'}
+          </p>
+        </div>
+        {gmailConnected ? (
+          <span className="flex items-center gap-1 text-xs text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full font-semibold">
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            מחובר
+          </span>
+        ) : (
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={handleConnectGmail}
+            className="text-xs gradient-primary text-white px-4 py-2 rounded-xl font-semibold"
+          >
+            התחברות
+          </motion.button>
+        )}
+      </div>
+
+      {gmailConnected && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          className="space-y-3 border-t border-gray-100 pt-3"
+        >
+          {lastScan && (
+            <p className="text-xs text-gray-400">
+              סריקה אחרונה: {new Date(lastScan).toLocaleDateString('he-IL', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+            </p>
+          )}
+
+          <div className="flex gap-2">
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={handleScan}
+              disabled={scanning}
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold border border-primary-200 text-primary-600 bg-primary-50"
+            >
+              <RefreshCw className={`w-4 h-4 ${scanning ? 'animate-spin' : ''}`} />
+              {scanning ? 'סורק...' : 'סרוק עכשיו'}
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={handleDisconnect}
+              className="py-2.5 px-4 rounded-xl text-sm font-semibold border border-red-200 text-red-500 bg-red-50"
+            >
+              ניתוק
+            </motion.button>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-600">סריקה אוטומטית</span>
+            <button
+              onClick={() => setAutoScan(!autoScan)}
+              className={`relative w-11 h-6 rounded-full transition-colors ${autoScan ? 'bg-primary-500' : 'bg-gray-300'}`}
+            >
+              <motion.div
+                animate={{ x: autoScan ? -20 : 0 }}
+                className="absolute top-0.5 right-0.5 w-5 h-5 bg-white rounded-full shadow-sm"
+              />
+            </button>
+          </div>
+        </motion.div>
+      )}
+    </motion.div>
+  );
+}
+
+const OTHER_SETTINGS = [
   { icon: MessageSquare, title: 'חיבור SMS', desc: 'קריאת הודעות SMS אוטומטית', soon: true },
-  { icon: Mail, title: 'חיבור Gmail', desc: 'סריקת אימיילים לזיהוי חבילות', soon: true },
   { icon: Bell, title: 'התראות', desc: 'קבלת עדכונים על שינויי סטטוס', soon: true },
   { icon: Smartphone, title: 'אפליקציית שליחים', desc: 'חיבור לאפליקציות שליחים', soon: true },
 ];
@@ -23,12 +174,16 @@ export default function SettingsPage() {
       </div>
 
       <div className="px-4 -mt-4 space-y-3 pb-4">
-        {SETTINGS.map((item, i) => (
+        <Suspense fallback={<div className="bg-white rounded-2xl p-4 shadow-sm animate-pulse h-20" />}>
+          <GmailSection />
+        </Suspense>
+
+        {OTHER_SETTINGS.map((item, i) => (
           <motion.div
             key={item.title}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.05 }}
+            transition={{ delay: (i + 1) * 0.05 }}
             className="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-4"
           >
             <div className="w-11 h-11 rounded-xl bg-primary-50 flex items-center justify-center text-primary-600">
@@ -38,9 +193,7 @@ export default function SettingsPage() {
               <h3 className="font-bold text-gray-900 text-sm">{item.title}</h3>
               <p className="text-xs text-gray-400 mt-0.5">{item.desc}</p>
             </div>
-            {item.soon && (
-              <span className="text-xs bg-accent-50 text-accent-600 px-2.5 py-1 rounded-full font-semibold">בקרוב</span>
-            )}
+            <span className="text-xs bg-accent-50 text-accent-600 px-2.5 py-1 rounded-full font-semibold">בקרוב</span>
           </motion.div>
         ))}
 
@@ -52,6 +205,10 @@ export default function SettingsPage() {
         >
           <p>PickPick v0.1.0</p>
           <p className="mt-1">🇮🇱 נבנה באהבה בישראל</p>
+          <Link href="/admin" className="inline-flex items-center gap-1 mt-4 text-xs text-gray-300 hover:text-gray-500 transition-colors">
+            <Shield className="w-3 h-3" />
+            ניהול
+          </Link>
         </motion.div>
       </div>
 
