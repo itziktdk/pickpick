@@ -207,7 +207,7 @@ export default function DashboardPage() {
       <UrgentBanner packages={allPackages} />
 
       {/* Package List */}
-      <div className="px-4 space-y-3 pb-4 mt-4">
+      <div className="px-4 space-y-4 pb-28 mt-4">
         <AnimatePresence mode="popLayout">
           {activePackages.length > 0 ? (
             activePackages.map((pkg) => <PackageCard key={pkg.id} pkg={pkg} />)

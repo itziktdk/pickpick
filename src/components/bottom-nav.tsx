@@ -1,12 +1,12 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, PlusCircle, BarChart3, Settings } from 'lucide-react';
+import { Home, PlusCircle, BarChart3, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
 const NAV_ITEMS = [
-  { href: '/dashboard', label: 'דשבורד', icon: LayoutDashboard },
+  { href: '/dashboard', label: 'בית', icon: Home },
   { href: '/add', label: 'הוסף', icon: PlusCircle, prominent: true },
   { href: '/stats', label: 'סטטיסטיקות', icon: BarChart3 },
   { href: '/settings', label: 'הגדרות', icon: Settings },
@@ -17,8 +17,8 @@ export function BottomNav() {
   const router = useRouter();
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-t border-gray-100 dark:border-gray-800 z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
-      <div className="flex items-center justify-around h-16 max-w-lg mx-auto">
+    <nav className="fixed bottom-0 inset-x-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-t border-gray-100 dark:border-gray-800 z-50" style={{ paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 8px)' }}>
+      <div className="flex items-center justify-around h-20 pb-2 max-w-lg mx-auto">
         {NAV_ITEMS.map((item) => {
           const active = pathname === item.href || (item.href === '/dashboard' && pathname.startsWith('/package'));
           return (

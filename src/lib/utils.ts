@@ -29,11 +29,12 @@ export function timeAgo(dateStr: string): string {
   const diffDays = Math.floor(diffHours / 24);
 
   if (diffMins < 1) return 'עכשיו';
-  if (diffMins < 60) return `לפני ${diffMins} דקות`;
-  if (diffHours < 24) return `לפני ${diffHours} שעות`;
+  if (diffMins < 60) return `לפני ${diffMins} ${diffMins === 1 ? 'דקה' : 'דקות'}`;
+  if (diffHours < 24) return `לפני ${diffHours} ${diffHours === 1 ? 'שעה' : 'שעות'}`;
   if (diffDays === 1) return 'אתמול';
-  if (diffDays < 7) return `לפני ${diffDays} ימים`;
-  if (diffDays < 30) return `לפני ${Math.floor(diffDays / 7)} שבועות`;
+  if (diffDays < 7) return `לפני ${diffDays} ${diffDays === 1 ? 'יום' : 'ימים'}`;
+  const weeks = Math.floor(diffDays / 7);
+  if (diffDays < 30) return `לפני ${weeks} ${weeks === 1 ? 'שבוע' : 'שבועות'}`;
   return formatDate(dateStr);
 }
 
@@ -59,9 +60,9 @@ export function getStoreColor(storeName: string): string {
 
 export function getDeliveryProgress(status: string): number {
   switch (status) {
-    case 'new': return 25;
+    case 'new': return 10;
     case 'in_transit': return 50;
-    case 'ready_for_pickup': return 75;
+    case 'ready_for_pickup': return 80;
     case 'picked_up': return 100;
     default: return 0;
   }
