@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Heebo } from 'next/font/google';
 import './globals.css';
+import { AuthProvider } from '@/lib/auth-context';
 
 const heebo = Heebo({
   subsets: ['hebrew', 'latin'],
@@ -11,7 +12,6 @@ const heebo = Heebo({
 export const metadata: Metadata = {
   title: 'PickPick - מעקב חבילות',
   description: 'כל החבילות שלך, במקום אחד ✨',
-  manifest: '/pickpick/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
@@ -30,7 +30,9 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="he" dir="rtl" className={heebo.variable}>
-      <body className="font-sans min-h-screen">{children}</body>
+      <body className="font-sans min-h-screen">
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }
