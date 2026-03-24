@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --gradient-start: #667eea;
+    --gradient-end: #764ba2;
+  }
+  
+  body {
+    @apply bg-surface text-gray-900 antialiased;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@layer utilities {
+  .gradient-primary {
+    background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+  }
+  
+  .gradient-card {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  }
+
+  .safe-bottom {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+  }
+}

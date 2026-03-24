@@ -1,0 +1,86 @@
+import { Package } from '@/types/package';
+
+export const mockPackages: Package[] = [
+  {
+    id: '1',
+    storeName: 'אמזון',
+    trackingNumber: 'AMZ-IL-78234921',
+    status: 'in_transit',
+    pickupLocation: 'נקודת חלוקה - רמת גן, רח׳ ביאליק 32',
+    estimatedDate: '2026-03-26',
+    receivedDate: '2026-03-21',
+    source: 'email',
+    statusHistory: [
+      { status: 'new', date: '2026-03-21T10:00:00Z', note: 'הזמנה התקבלה' },
+      { status: 'in_transit', date: '2026-03-23T14:30:00Z', note: 'החבילה יצאה מהמחסן' },
+    ],
+  },
+  {
+    id: '2',
+    storeName: 'שיין',
+    trackingNumber: 'SHEIN-9182736455',
+    status: 'ready_for_pickup',
+    pickupLocation: 'לוקר - קניון איילון, רמת גן',
+    receivedDate: '2026-03-15',
+    source: 'sms',
+    rawMessage: 'שיין: החבילה שלך מוכנה לאיסוף בלוקר קניון איילון',
+    statusHistory: [
+      { status: 'new', date: '2026-03-15T08:00:00Z' },
+      { status: 'in_transit', date: '2026-03-18T12:00:00Z' },
+      { status: 'ready_for_pickup', date: '2026-03-23T09:15:00Z', note: 'ממתין בלוקר - קוד: 4821' },
+    ],
+  },
+  {
+    id: '3',
+    storeName: 'דואר ישראל',
+    trackingNumber: 'RR123456789IL',
+    status: 'ready_for_pickup',
+    pickupLocation: 'סניף דואר 61 - תל אביב, רח׳ דיזנגוף 99',
+    receivedDate: '2026-03-19',
+    source: 'sms',
+    statusHistory: [
+      { status: 'new', date: '2026-03-19T07:30:00Z' },
+      { status: 'in_transit', date: '2026-03-20T16:00:00Z' },
+      { status: 'ready_for_pickup', date: '2026-03-24T08:00:00Z', note: 'ממתין בסניף דואר' },
+    ],
+  },
+  {
+    id: '4',
+    storeName: 'AliExpress',
+    trackingNumber: 'LP00123456789CN',
+    status: 'new',
+    receivedDate: '2026-03-23',
+    source: 'email',
+    statusHistory: [
+      { status: 'new', date: '2026-03-23T20:00:00Z', note: 'ההזמנה נשלחה מסין' },
+    ],
+  },
+  {
+    id: '5',
+    storeName: 'iHerb',
+    trackingNumber: 'IHR-8827364',
+    status: 'picked_up',
+    pickupLocation: 'נקודת חלוקה - גבעתיים',
+    receivedDate: '2026-03-10',
+    source: 'manual',
+    statusHistory: [
+      { status: 'new', date: '2026-03-10T12:00:00Z' },
+      { status: 'in_transit', date: '2026-03-14T09:00:00Z' },
+      { status: 'ready_for_pickup', date: '2026-03-18T11:30:00Z' },
+      { status: 'picked_up', date: '2026-03-19T17:45:00Z', note: 'נאסף בהצלחה' },
+    ],
+  },
+  {
+    id: '6',
+    storeName: 'FedEx',
+    trackingNumber: 'FDX-794826135',
+    status: 'in_transit',
+    estimatedDate: '2026-03-27',
+    receivedDate: '2026-03-22',
+    source: 'email',
+    statusHistory: [
+      { status: 'new', date: '2026-03-22T06:00:00Z', note: 'חבילה נאספה' },
+      { status: 'in_transit', date: '2026-03-23T10:00:00Z', note: 'במכס - נתב״ג' },
+    ],
+  },
+];
