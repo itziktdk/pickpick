@@ -10,8 +10,8 @@ const heebo = Heebo({
 
 export const metadata: Metadata = {
   title: 'PickPick - מעקב חבילות',
-  description: 'עוקבים אחרי כל החבילות שלך במקום אחד',
-  manifest: '/manifest.json',
+  description: 'כל החבילות שלך, במקום אחד ✨',
+  manifest: '/pickpick/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
@@ -24,7 +24,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: '#5c7cfa',
+  themeColor: '#FF6B6B',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

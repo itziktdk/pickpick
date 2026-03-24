@@ -4,8 +4,9 @@
 
 @layer base {
   :root {
-    --gradient-start: #667eea;
-    --gradient-end: #764ba2;
+    --gradient-start: #FF6B6B;
+    --gradient-end: #FF8E8E;
+    --color-bg: #FFF9F5;
   }
   
   body {
@@ -22,11 +23,27 @@
     background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
   }
   
+  .gradient-coral {
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+  }
+
+  .gradient-teal {
+    background: linear-gradient(135deg, #4ECDC4 0%, #6dddd0 100%);
+  }
+
   .gradient-card {
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #FFF9F5 100%);
   }
 
   .safe-bottom {
     padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .card-shadow {
+    box-shadow: 0 2px 16px rgba(255, 107, 107, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+  }
+
+  .card-shadow-hover {
+    box-shadow: 0 4px 24px rgba(255, 107, 107, 0.15), 0 2px 8px rgba(0, 0, 0, 0.06);
   }
 }
