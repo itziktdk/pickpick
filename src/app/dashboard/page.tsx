@@ -50,12 +50,12 @@ function UrgentBanner({ packages }: { packages: PkgType[] }) {
     >
       {expiring.map((pkg) => (
         <div key={pkg.id} className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-2xl p-3 flex items-center gap-3">
-          <span className="text-2xl">⚠️</span>
-          <div className="flex-1">
+          <Bell className="w-5 h-5 text-red-400 shrink-0" />
+          <div className="flex-1 text-right">
             <p className="text-sm font-bold text-red-700 dark:text-red-300">חבילה עומדת לפוג!</p>
             <p className="text-xs text-red-500 dark:text-red-400">{pkg.storeName} — {pkg.pickupLocation}</p>
           </div>
-          <Bell className="w-4 h-4 text-red-400" />
+          <span className="text-2xl shrink-0">⚠️</span>
         </div>
       ))}
     </motion.div>
