@@ -1,6 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Truck, PackageCheck, PackageOpen, Package as PkgIcon, Copy, MapPin, Share2, Navigation, Trash2, Archive, Check, ExternalLink, Clock, Building2 } from 'lucide-react';
 import { usePackageStore } from '@/lib/store';
@@ -10,6 +11,7 @@ import { BottomNav } from '@/components/bottom-nav';
 import { ProgressBar } from '@/components/ui/progress-bar';
 import { Toast } from '@/components/ui/toast';
 import { Confetti } from '@/components/ui/confetti';
+import { NavigationSheet } from '@/components/ui/navigation-sheet';
 
 const TIMELINE_ICONS: Record<PackageStatus, React.ReactNode> = {
   new: <PackageOpen className="w-4 h-4" />,
@@ -24,6 +26,7 @@ export default function PackageDetailClient() {
   const pkg = usePackageStore((s) => s.getPackage(id));
   const updateStatus = usePackageStore((s) => s.updatePackageStatus);
   const showToast = usePackageStore((s) => s.showToast);
+  const [navOpen, setNavOpen] = useState(false);
 
   if (!pkg) {
     return (
@@ -192,6 +195,7 @@ export default function PackageDetailClient() {
             <div className="flex gap-2 mt-3">
               <motion.button
                 whileTap={{ scale: 0.95 }}
+                onClick={() => setNavOpen(true)}
                 className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold bg-accent-50 dark:bg-accent-900/30 text-accent-600 dark:text-accent-400"
               >
                 <Navigation className="w-4 h-4" />
@@ -273,6 +277,7 @@ export default function PackageDetailClient() {
 
       <Toast />
       <Confetti />
+      <NavigationSheet isOpen={navOpen} onClose={() => setNavOpen(false)} address={pkg.pickupLocationDetails?.address || pkg.pickupLocation || ''} />
       <BottomNav />
     </div>
   );

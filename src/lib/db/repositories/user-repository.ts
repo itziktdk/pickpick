@@ -6,6 +6,8 @@ export interface DbUser {
   email: string;
   passwordHash: string;
   avatar?: string;
+  phone?: string;
+  address?: string;
   joinDate: string;
   lastActive: string;
   gmailConnected: boolean;

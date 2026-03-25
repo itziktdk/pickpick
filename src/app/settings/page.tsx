@@ -1,11 +1,12 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowRight, Mail, MessageSquare, Bell, Smartphone, Shield, RefreshCw, CheckCircle2, Wifi, WifiOff, Sun, Moon, Monitor } from 'lucide-react';
+import { ArrowRight, Mail, MessageSquare, Bell, Smartphone, Shield, RefreshCw, CheckCircle2, Wifi, WifiOff, Sun, Moon, Monitor, User, ChevronLeft } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect, Suspense } from 'react';
 import { BottomNav } from '@/components/bottom-nav';
 import { useThemeStore, Theme } from '@/lib/theme-store';
+import { useAuth } from '@/lib/auth-context';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
@@ -211,6 +212,7 @@ const OTHER_SETTINGS = [
 
 export default function SettingsPage() {
   const router = useRouter();
+  const { user } = useAuth();
 
   return (
     <div className="min-h-screen bg-surface dark:bg-[#1a1a2e] safe-bottom">
@@ -220,6 +222,26 @@ export default function SettingsPage() {
       </div>
 
       <div className="px-4 -mt-4 space-y-3 pb-4">
+        {/* Profile Card */}
+        {user && (
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => router.push('/profile')}
+            className="w-full bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm flex items-center gap-4 text-right"
+          >
+            <div className="w-12 h-12 rounded-full gradient-primary flex items-center justify-center text-white text-lg font-black shadow-md">
+              {user.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm">{user.name}</h3>
+              <p className="text-xs text-gray-400 truncate">{user.email}</p>
+            </div>
+            <ChevronLeft className="w-5 h-5 text-gray-300 dark:text-gray-600" />
+          </motion.button>
+        )}
+
         <ThemeSelector />
 
         <Suspense fallback={<div className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm animate-pulse h-20" />}>

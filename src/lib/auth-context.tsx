@@ -6,6 +6,9 @@ interface AuthUser {
   id: string;
   name: string;
   email: string;
+  phone?: string;
+  address?: string;
+  joinDate?: string;
 }
 
 interface AuthContextType {
@@ -14,11 +17,12 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<{ error?: string }>;
   register: (name: string, email: string, password: string) => Promise<{ error?: string }>;
   logout: () => void;
+  updateUser: (updates: Partial<AuthUser>) => void;
   token: string | null;
 }
 
 const AuthContext = createContext<AuthContextType>({
-  user: null, loading: true, login: async () => ({}), register: async () => ({}), logout: () => {}, token: null,
+  user: null, loading: true, login: async () => ({}), register: async () => ({}), logout: () => {}, updateUser: () => {}, token: null,
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -82,8 +86,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
+  const updateUser = (updates: Partial<AuthUser>) => {
+    setUser(prev => prev ? { ...prev, ...updates } : null);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, token }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, updateUser, token }}>
       {children}
     </AuthContext.Provider>
   );

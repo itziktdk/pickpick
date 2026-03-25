@@ -10,6 +10,8 @@ import { BottomNav } from '@/components/bottom-nav';
 import { Toast } from '@/components/ui/toast';
 import { Confetti } from '@/components/ui/confetti';
 import { ProgressBar } from '@/components/ui/progress-bar';
+import { NavigationSheet } from '@/components/ui/navigation-sheet';
+import { useAuth } from '@/lib/auth-context';
 import { useRouter } from 'next/navigation';
 
 const STATUS_ICONS: Record<PackageStatus, React.ReactNode> = {
@@ -19,16 +21,15 @@ const STATUS_ICONS: Record<PackageStatus, React.ReactNode> = {
   picked_up: <Package className="w-4 h-4" />,
 };
 
-function getGreeting(): string {
+function getGreeting(firstName?: string): string {
   const now = new Date();
-  // Israel timezone approximation: UTC+3
   const israelHour = (now.getUTCHours() + 3) % 24;
-  const name = 'חבר'; // default, could come from auth context
+  const namePart = firstName ? `, ${firstName}` : '';
 
-  if (israelHour >= 5 && israelHour < 12) return `בוקר טוב, ${name}! ☀️`;
-  if (israelHour >= 12 && israelHour < 17) return `צהריים טובים, ${name}! 🌤️`;
-  if (israelHour >= 17 && israelHour < 21) return `ערב טוב, ${name}! 🌅`;
-  return `לילה טוב, ${name}! 🌙`;
+  if (israelHour >= 5 && israelHour < 12) return `בוקר טוב${namePart}! ☀️`;
+  if (israelHour >= 12 && israelHour < 17) return `צהריים טובים${namePart}! 🌤️`;
+  if (israelHour >= 17 && israelHour < 21) return `ערב טוב${namePart}! 🌅`;
+  return `לילה טוב${namePart}! 🌙`;
 }
 
 function UrgentBanner({ packages }: { packages: PkgType[] }) {
@@ -61,7 +62,7 @@ function UrgentBanner({ packages }: { packages: PkgType[] }) {
   );
 }
 
-function PackageCard({ pkg }: { pkg: PkgType }) {
+function PackageCard({ pkg, onNavigate }: { pkg: PkgType; onNavigate: (address: string) => void }) {
   const router = useRouter();
   const storeColor = getStoreColor(pkg.storeName);
   const progress = getDeliveryProgress(pkg.status);
@@ -128,14 +129,19 @@ function PackageCard({ pkg }: { pkg: PkgType }) {
             אשר מסירה
           </motion.a>
         ) : isReady ? (
-          <motion.span
+          <motion.button
             animate={{ scale: [1, 1.05, 1] }}
             transition={{ repeat: Infinity, duration: 2 }}
+            onClick={(e) => {
+              e.stopPropagation();
+              const addr = pkg.pickupLocationDetails?.address || pkg.pickupLocation || '';
+              if (addr) onNavigate(addr);
+            }}
             className="flex items-center gap-1 text-accent-500 font-bold text-xs"
           >
             <Navigation className="w-3.5 h-3.5" />
             אסוף עכשיו!
-          </motion.span>
+          </motion.button>
         ) : null}
       </div>
     </motion.div>
@@ -147,12 +153,16 @@ export default function DashboardPage() {
   const allPackages = usePackageStore((s) => s.packages);
   const packages = filteredPackages();
   const router = useRouter();
+  const { user } = useAuth();
   const [showCompleted, setShowCompleted] = useState(false);
   const [greeting, setGreeting] = useState('שלום! 👋');
+  const [navAddress, setNavAddress] = useState('');
+  const [navOpen, setNavOpen] = useState(false);
 
   useEffect(() => {
-    setGreeting(getGreeting());
-  }, []);
+    const firstName = user?.name?.split(' ')[0];
+    setGreeting(getGreeting(firstName || undefined));
+  }, [user]);
 
   const activePackages = packages.filter((p) => p.status !== 'picked_up');
   const completedPackages = packages.filter((p) => p.status === 'picked_up');
@@ -164,7 +174,7 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="gradient-primary px-6 pt-14 pb-8 rounded-b-3xl shadow-lg">
         <div className="flex items-center justify-between mb-4">
-          <div>
+          <div className="cursor-pointer" onClick={() => user && router.push('/profile')}>
             <h1 className="text-2xl font-black text-white">{greeting}</h1>
             <p className="text-white/80 text-sm mt-1">
               {activeCount > 0
@@ -210,7 +220,7 @@ export default function DashboardPage() {
       <div className="px-4 space-y-4 pb-28 mt-4">
         <AnimatePresence mode="popLayout">
           {activePackages.length > 0 ? (
-            activePackages.map((pkg) => <PackageCard key={pkg.id} pkg={pkg} />)
+            activePackages.map((pkg) => <PackageCard key={pkg.id} pkg={pkg} onNavigate={(addr) => { setNavAddress(addr); setNavOpen(true); }} />)
           ) : (
             <motion.div
               initial={{ opacity: 0 }}
@@ -246,7 +256,7 @@ export default function DashboardPage() {
                   className="space-y-3 overflow-hidden"
                 >
                   {completedPackages.map((pkg) => (
-                    <PackageCard key={pkg.id} pkg={pkg} />
+                    <PackageCard key={pkg.id} pkg={pkg} onNavigate={(addr) => { setNavAddress(addr); setNavOpen(true); }} />
                   ))}
                 </motion.div>
               )}
@@ -257,6 +267,7 @@ export default function DashboardPage() {
 
       <Toast />
       <Confetti />
+      <NavigationSheet isOpen={navOpen} onClose={() => setNavOpen(false)} address={navAddress} />
       <BottomNav />
     </div>
   );

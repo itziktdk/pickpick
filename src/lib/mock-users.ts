@@ -8,7 +8,7 @@ export const mockUsers: User[] = [
     joinDate: '2026-01-15T10:00:00Z',
     lastActive: '2026-03-24T12:30:00Z',
     packageCount: 12,
-    gmailConnected: true,
+    gmailConnected: true, createdAt: "2026-01-15T10:00:00Z",
   },
   {
     id: 'u2',
@@ -17,7 +17,7 @@ export const mockUsers: User[] = [
     joinDate: '2026-02-01T08:00:00Z',
     lastActive: '2026-03-24T09:15:00Z',
     packageCount: 8,
-    gmailConnected: true,
+    gmailConnected: true, createdAt: "2026-01-15T10:00:00Z",
   },
   {
     id: 'u3',
@@ -26,7 +26,7 @@ export const mockUsers: User[] = [
     joinDate: '2026-02-10T14:00:00Z',
     lastActive: '2026-03-23T18:00:00Z',
     packageCount: 5,
-    gmailConnected: false,
+    gmailConnected: false, createdAt: "2026-02-01T08:00:00Z",
   },
   {
     id: 'u4',
@@ -35,7 +35,7 @@ export const mockUsers: User[] = [
     joinDate: '2026-02-18T11:30:00Z',
     lastActive: '2026-03-24T11:00:00Z',
     packageCount: 15,
-    gmailConnected: true,
+    gmailConnected: true, createdAt: "2026-01-15T10:00:00Z",
   },
   {
     id: 'u5',
@@ -44,7 +44,7 @@ export const mockUsers: User[] = [
     joinDate: '2026-03-01T09:00:00Z',
     lastActive: '2026-03-22T16:45:00Z',
     packageCount: 3,
-    gmailConnected: false,
+    gmailConnected: false, createdAt: "2026-02-01T08:00:00Z",
   },
   {
     id: 'u6',
@@ -53,7 +53,7 @@ export const mockUsers: User[] = [
     joinDate: '2026-03-05T13:00:00Z',
     lastActive: '2026-03-24T08:30:00Z',
     packageCount: 7,
-    gmailConnected: true,
+    gmailConnected: true, createdAt: "2026-01-15T10:00:00Z",
   },
   {
     id: 'u7',
@@ -62,7 +62,7 @@ export const mockUsers: User[] = [
     joinDate: '2026-03-10T07:00:00Z',
     lastActive: '2026-03-23T20:00:00Z',
     packageCount: 2,
-    gmailConnected: false,
+    gmailConnected: false, createdAt: "2026-02-01T08:00:00Z",
   },
   {
     id: 'u8',
@@ -71,7 +71,7 @@ export const mockUsers: User[] = [
     joinDate: '2026-03-15T16:00:00Z',
     lastActive: '2026-03-24T10:00:00Z',
     packageCount: 4,
-    gmailConnected: true,
+    gmailConnected: true, createdAt: "2026-01-15T10:00:00Z",
   },
   {
     id: 'u9',
@@ -80,7 +80,7 @@ export const mockUsers: User[] = [
     joinDate: '2026-03-20T12:00:00Z',
     lastActive: '2026-03-24T14:00:00Z',
     packageCount: 1,
-    gmailConnected: false,
+    gmailConnected: false, createdAt: "2026-02-01T08:00:00Z",
   },
   {
     id: 'u10',
@@ -89,6 +89,6 @@ export const mockUsers: User[] = [
     joinDate: '2026-03-22T10:00:00Z',
     lastActive: '2026-03-23T22:00:00Z',
     packageCount: 6,
-    gmailConnected: true,
+    gmailConnected: true, createdAt: "2026-01-15T10:00:00Z",
   },
 ];
