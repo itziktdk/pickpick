@@ -46,7 +46,7 @@ function UrgentBanner({ packages }: { packages: PkgType[] }) {
     <motion.div
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mx-4 -mt-3 mb-3"
+      className="mx-4 mt-4 mb-3"
     >
       {expiring.map((pkg) => (
         <div key={pkg.id} className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-2xl p-3 flex items-center gap-3">
