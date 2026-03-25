@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, LogIn, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, LogIn, Loader2, Fingerprint } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
+import { isPasskeySupported } from '@/lib/passkey';
 import Link from 'next/link';
 
 export default function LoginPage() {
@@ -13,8 +14,14 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [passkeyLoading, setPasskeyLoading] = useState(false);
+  const [passkeySupported, setPasskeySupported] = useState(false);
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, loginWithPasskeyFn } = useAuth();
+
+  useEffect(() => {
+    setPasskeySupported(isPasskeySupported());
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,6 +34,19 @@ export default function LoginPage() {
     const result = await login(email, password);
     setLoading(false);
 
+    if (result.error) {
+      setError(result.error);
+    } else {
+      router.push('/dashboard');
+    }
+  };
+
+  const handlePasskeyLogin = async () => {
+    setError('');
+    if (!email.trim()) { setError('נא להזין אימייל תחילה'); return; }
+    setPasskeyLoading(true);
+    const result = await loginWithPasskeyFn(email);
+    setPasskeyLoading(false);
     if (result.error) {
       setError(result.error);
     } else {
@@ -97,6 +117,27 @@ export default function LoginPage() {
           {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <LogIn className="w-5 h-5" />}
           {loading ? 'מתחבר...' : 'התחברות'}
         </motion.button>
+
+        {passkeySupported && (
+          <>
+            <div className="flex items-center gap-3 px-2">
+              <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
+              <span className="text-xs text-gray-400 font-semibold">או</span>
+              <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
+            </div>
+
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              type="button"
+              onClick={handlePasskeyLogin}
+              disabled={passkeyLoading}
+              className="w-full py-4 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold text-lg shadow-lg flex items-center justify-center gap-2 disabled:opacity-70"
+            >
+              {passkeyLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Fingerprint className="w-5 h-5" />}
+              {passkeyLoading ? 'מאמת...' : '🔐 התחבר עם Face ID / טביעת אצבע'}
+            </motion.button>
+          </>
+        )}
 
         <p className="text-center text-sm text-gray-500 dark:text-gray-400 pb-8">
           אין לך חשבון?{' '}

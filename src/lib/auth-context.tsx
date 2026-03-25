@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { registerPasskey as registerPasskeyClient, loginWithPasskey as loginWithPasskeyClient } from '@/lib/passkey';
 
 interface AuthUser {
   id: string;
@@ -16,13 +17,15 @@ interface AuthContextType {
   loading: boolean;
   login: (email: string, password: string) => Promise<{ error?: string }>;
   register: (name: string, email: string, password: string) => Promise<{ error?: string }>;
+  loginWithPasskeyFn: (email: string) => Promise<{ error?: string }>;
+  registerPasskeyFn: () => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   updateUser: (updates: Partial<AuthUser>) => void;
   token: string | null;
 }
 
 const AuthContext = createContext<AuthContextType>({
-  user: null, loading: true, login: async () => ({}), register: async () => ({}), logout: () => {}, updateUser: () => {}, token: null,
+  user: null, loading: true, login: async () => ({}), register: async () => ({}), loginWithPasskeyFn: async () => ({}), registerPasskeyFn: async () => ({ success: false }), logout: () => {}, updateUser: () => {}, token: null,
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -86,12 +89,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
+  const loginWithPasskeyFn = async (email: string) => {
+    try {
+      const result = await loginWithPasskeyClient(email);
+      if (!result) return { error: 'התחברות עם Passkey נכשלה' };
+      localStorage.setItem('pickpick_token', result.token);
+      setToken(result.token);
+      setUser(result.user);
+      return {};
+    } catch {
+      return { error: 'שגיאה בהתחברות עם Passkey' };
+    }
+  };
+
+  const registerPasskeyFn = async () => {
+    if (!token) return { success: false, error: 'לא מחובר' };
+    try {
+      const success = await registerPasskeyClient(token);
+      return success ? { success: true } : { success: false, error: 'רישום Passkey נכשל' };
+    } catch {
+      return { success: false, error: 'שגיאה ברישום Passkey' };
+    }
+  };
+
   const updateUser = (updates: Partial<AuthUser>) => {
     setUser(prev => prev ? { ...prev, ...updates } : null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, updateUser, token }}>
+    <AuthContext.Provider value={{ user, loading, login, register, loginWithPasskeyFn, registerPasskeyFn, logout, updateUser, token }}>
       {children}
     </AuthContext.Provider>
   );

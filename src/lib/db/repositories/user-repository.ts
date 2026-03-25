@@ -1,4 +1,5 @@
 import { JsonRepository } from '../json-db';
+import { PasskeyCredential } from '@/types/user';
 
 export interface DbUser {
   id: string;
@@ -11,6 +12,8 @@ export interface DbUser {
   joinDate: string;
   lastActive: string;
   gmailConnected: boolean;
+  passkeys?: PasskeyCredential[];
+  currentChallenge?: string;
 }
 
 export const userRepository = new JsonRepository<DbUser>('users');

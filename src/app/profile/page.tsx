@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Check, X, Lock, Key, LogOut, Trash2, Eye, EyeOff, ChevronDown, Fingerprint } from 'lucide-react';
+import { ArrowRight, Check, X, Lock, Key, LogOut, Trash2, Eye, EyeOff, ChevronDown, Fingerprint, Plus, Shield } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
+import { isPasskeySupported } from '@/lib/passkey';
 import { BottomNav } from '@/components/bottom-nav';
 import { cn } from '@/lib/utils';
 
@@ -79,8 +80,11 @@ function EditableField({ label, icon, value, onSave, editable = true, placeholde
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { user, token, logout, updateUser } = useAuth();
+  const { user, token, logout, updateUser, registerPasskeyFn } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [passkeySupported, setPasskeySupported] = useState(false);
+  const [passkeyCount, setPasskeyCount] = useState<number | null>(null);
+  const [passkeyLoading, setPasskeyLoading] = useState(false);
   const [currentPw, setCurrentPw] = useState('');
   const [newPw, setNewPw] = useState('');
   const [confirmPw, setConfirmPw] = useState('');
@@ -94,6 +98,28 @@ export default function ProfilePage() {
   const showToastMsg = (msg: string) => {
     setToast(msg);
     setTimeout(() => setToast(''), 3000);
+  };
+
+  useEffect(() => {
+    setPasskeySupported(isPasskeySupported());
+    if (token) {
+      fetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } })
+        .then(r => r.json())
+        .then(data => { if (data.user?.passkeyCount !== undefined) setPasskeyCount(data.user.passkeyCount); })
+        .catch(() => {});
+    }
+  }, [token]);
+
+  const handleRegisterPasskey = async () => {
+    setPasskeyLoading(true);
+    const result = await registerPasskeyFn();
+    setPasskeyLoading(false);
+    if (result.success) {
+      setPasskeyCount((prev) => (prev ?? 0) + 1);
+      showToastMsg('Passkey נוסף בהצלחה! 🎉');
+    } else {
+      showToastMsg(result.error || 'שגיאה ברישום Passkey');
+    }
   };
 
   const saveField = async (field: string, value: string) => {
@@ -239,19 +265,54 @@ export default function ProfilePage() {
           </AnimatePresence>
 
           {/* Passkey */}
-          <div className="flex items-center justify-between py-2 opacity-60">
-            <div className="flex items-center gap-3">
-              <Fingerprint className="w-5 h-5 text-gray-400" />
-              <div>
-                <div className="flex items-center gap-2">
+          {!passkeySupported ? (
+            <div className="flex items-center justify-between py-2 opacity-60">
+              <div className="flex items-center gap-3">
+                <Fingerprint className="w-5 h-5 text-gray-400" />
+                <div>
                   <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Passkey</span>
-                  <span className="text-[10px] font-bold bg-accent-50 dark:bg-accent-900/30 text-accent-600 dark:text-accent-400 px-2 py-0.5 rounded-full">בקרוב</span>
+                  <p className="text-xs text-gray-400 mt-0.5">המכשיר שלך לא תומך ב-Passkey</p>
+                  <p className="text-xs text-gray-400">נדרש מכשיר עם Face ID, Touch ID, או חיישן טביעת אצבע</p>
                 </div>
-                <p className="text-xs text-gray-400 mt-0.5">התחבר בלי סיסמה עם טביעת אצבע או Face ID</p>
               </div>
             </div>
-            <Lock className="w-4 h-4 text-gray-300 dark:text-gray-600" />
-          </div>
+          ) : passkeyCount && passkeyCount > 0 ? (
+            <div className="py-2 space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Fingerprint className="w-5 h-5 text-emerald-500" />
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Passkey</span>
+                      <span className="text-[10px] font-bold bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full">✅ מוגדר</span>
+                    </div>
+                    <p className="text-xs text-gray-400 mt-0.5">{passkeyCount} מכשירים מחוברים</p>
+                  </div>
+                </div>
+                <Shield className="w-4 h-4 text-emerald-500" />
+              </div>
+              <motion.button whileTap={{ scale: 0.97 }} onClick={handleRegisterPasskey} disabled={passkeyLoading}
+                className="w-full py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-semibold text-gray-600 dark:text-gray-400 flex items-center justify-center gap-2">
+                <Plus className="w-4 h-4" />
+                {passkeyLoading ? 'מוסיף...' : 'הוסף מכשיר נוסף'}
+              </motion.button>
+            </div>
+          ) : (
+            <div className="py-2 space-y-2">
+              <div className="flex items-center gap-3">
+                <Fingerprint className="w-5 h-5 text-gray-400" />
+                <div>
+                  <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Passkey</span>
+                  <p className="text-xs text-gray-400 mt-0.5">התחבר עם Face ID או טביעת אצבע</p>
+                </div>
+              </div>
+              <motion.button whileTap={{ scale: 0.97 }} onClick={handleRegisterPasskey} disabled={passkeyLoading}
+                className="w-full py-3 rounded-xl gradient-primary text-white font-bold text-sm flex items-center justify-center gap-2">
+                <Fingerprint className="w-4 h-4" />
+                {passkeyLoading ? 'מגדיר...' : 'הגדר Passkey 🔑'}
+              </motion.button>
+            </div>
+          )}
         </motion.div>
 
         {/* Danger Zone */}

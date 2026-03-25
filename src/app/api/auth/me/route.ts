@@ -14,6 +14,6 @@ export async function GET(req: NextRequest) {
   }
 
   return NextResponse.json({
-    user: { id: user.id, name: user.name, email: user.email, phone: (user as any).phone, address: (user as any).address, joinDate: user.joinDate, gmailConnected: user.gmailConnected },
+    user: { id: user.id, name: user.name, email: user.email, phone: (user as any).phone, address: (user as any).address, joinDate: user.joinDate, gmailConnected: user.gmailConnected, passkeyCount: (user.passkeys || []).length },
   });
 }

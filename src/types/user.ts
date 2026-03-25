@@ -1,3 +1,10 @@
+export interface PasskeyCredential {
+  credentialID: string;
+  credentialPublicKey: string; // base64
+  counter: number;
+  transports?: AuthenticatorTransport[];
+}
+
 export interface User {
   id: string;
   name: string;
@@ -9,5 +16,6 @@ export interface User {
   lastActive: string;
   packageCount: number;
   gmailConnected: boolean;
+  passkeys?: PasskeyCredential[];
   createdAt: string;
 }
