@@ -73,7 +73,7 @@ async function getMongoDb(): Promise<Db | null> {
 const repos: Record<string, Repository<any>> = {};
 
 export async function getRepository<T extends { id: string }>(
-  collection: 'users' | 'packages' | 'families' | 'notifications'
+  collection: 'users' | 'packages' | 'families' | 'notifications' | 'deliveryOffers' | 'deliveryRequests'
 ): Promise<Repository<T>> {
   if (repos[collection]) return repos[collection];
 
@@ -103,6 +103,14 @@ export async function getFamiliesRepo() {
 
 export async function getNotificationsRepo() {
   return getRepository<import('@/models/notification').Notification>('notifications');
+}
+
+export async function getDeliveryOffersRepo() {
+  return getRepository<import('@/models/delivery').DeliveryOffer>('deliveryOffers');
+}
+
+export async function getDeliveryRequestsRepo() {
+  return getRepository<import('@/models/delivery').DeliveryRequest>('deliveryRequests');
 }
 
 // Cleanup on shutdown
