@@ -1,12 +1,13 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, PlusCircle, BarChart3, Settings } from 'lucide-react';
+import { Home, PlusCircle, BarChart3, Settings, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
 const NAV_ITEMS = [
   { href: '/dashboard', label: 'בית', icon: Home },
+  { href: '/family', label: 'משפחה', icon: Users },
   { href: '/add', label: 'הוסף', icon: PlusCircle, prominent: true },
   { href: '/stats', label: 'סטטיסטיקות', icon: BarChart3 },
   { href: '/settings', label: 'הגדרות', icon: Settings },
